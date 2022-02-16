@@ -5,17 +5,8 @@ using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 
 
-List<List<int>> arr = new List<List<int>>();
 
 
-for (int i = 0; i < 6; i++)
-{
-    arr.Add(Console.ReadLine().TrimEnd().Split(' ').ToList().Select(arrTemp => Convert.ToInt32(arrTemp)).ToList());
-}
-
-int result = Solution.Result.hourglassSum(arr);
-
-Console.WriteLine(result);
 
 
 namespace Solution
@@ -32,24 +23,48 @@ namespace Solution
          * The function is expected to return an INTEGER.
          * The function accepts 2D_INTEGER_ARRAY arr as parameter.
          */
-
-        public static int hourglassSum(List<List<int>> arr)
+        public static void Main(string[] args)
         {
-            int result = 0, temp = 0;
+            string[] firstMultipleInput = Console.ReadLine().TrimEnd().Split(' ');
 
-            for (int i = 0; i < arr.Count; i++)
+            int n = Convert.ToInt32(firstMultipleInput[0]);
+
+            int m = Convert.ToInt32(firstMultipleInput[1]);
+
+            List<List<int>> queries = new List<List<int>>();
+
+            for (int i = 0; i < m; i++)
             {
-                for (int k = 0; k < arr[i].Count; k++)
-                {
-                    if (k + 2 < arr[i].Count && i + 2 < arr.Count)
-                        temp = arr[i][k] + arr[i][k + 1] + arr[i][k + 2] + arr[i + 1][k + 1] + arr[i + 2][k] + arr[i + 2][k + 1] + arr[i + 2][k + 2];
-                    if (i == 0 && k == 0)
-                        result = temp;
-                    if (temp > result)
-                        result = temp;
-                }
+                queries.Add(Console.ReadLine().TrimEnd().Split(' ').ToList().Select(queriesTemp => Convert.ToInt32(queriesTemp)).ToList());
             }
-            return result;
+
+            long result = Solution.Result.arrayManipulation(n, queries);
+
+            Console.WriteLine(result);
+            Console.ReadLine();
+        }
+        public static long arrayManipulation(int n, List<List<int>> queries)
+        {
+            long[] control = new long[n + 1];
+            long a, b, k;
+            for (int i = 0; i < queries.Count; i++)
+            {
+                a = queries[i][0];
+                b = queries[i][1];
+                k = queries[i][2];
+
+                control[a - 1] += k;
+                control[b] -= k;
+            }
+
+            long max = long.MinValue;
+            long sum = 0;
+            for (int i = 0; i < control.Length; i++)
+            {
+                sum += control[i];
+                max = Math.Max(max, sum);
+            }
+            return max;
         }
 
     }
